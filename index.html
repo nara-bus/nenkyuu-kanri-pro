@@ -17795,6 +17795,7 @@ function App() {
   const [ne, setNe] = useState({date:"",dow:"",diamond:"B",diamondNo:"",workTime:""});
   const [holidays, setHolidays] = useState(FALLBACK_HOLIDAYS);
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false); // 前年度→今年度移行確認ダイアログ
+  const [showNotice, setShowNotice] = useState(true); // 起動時注意喚起
   const [pendingWorkTime,   setPendingWorkTime]   = useState("");    // 確認待ちの労働時間
 
   const hayamiScrollRef = useRef(null);
@@ -18800,6 +18801,43 @@ function App() {
           )
         )
       )
+      /* ─── 起動時注意喚起モーダル ─── */
+      , showNotice && React.createElement('div', { style: {
+        position:"fixed", inset:0, zIndex:200,
+        background:"rgba(0,0,0,0.65)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        padding:"24px",
+      }}
+        , React.createElement('div', { style: {
+          background:"linear-gradient(135deg,#1e293b 0%,#0f172a 100%)",
+          border:"1.5px solid rgba(251,191,36,0.6)",
+          borderRadius:20, padding:"28px 24px 24px",
+          maxWidth:380, width:"100%",
+          boxShadow:"0 8px 40px rgba(0,0,0,0.6)",
+        }}
+          /* アイコン＋タイトル */
+          , React.createElement('div', { style: { display:"flex", alignItems:"center", gap:10, marginBottom:16 }}
+            , React.createElement('span', { style: { fontSize:28 }}, "⚠️")
+            , React.createElement('span', { style: { fontSize:16, fontWeight:700, color:"#fbbf24", letterSpacing:0.5 }}, "ご確認ください")
+          )
+          /* 本文 */
+          , React.createElement('p', { style: {
+            fontSize:15, color:"#e2e8f0", lineHeight:1.85,
+            margin:"0 0 24px", letterSpacing:0.3,
+          }}, "年休所得時間と所定労働時間の入力ミス、使用記録の記入漏れがないか確認してください！")
+          /* 閉じるボタン */
+          , React.createElement('div', { style: { display:"flex", justifyContent:"center" }}
+            , React.createElement('button', { onClick: ()=>setShowNotice(false), style: {
+              padding:"8px 28px",
+              background:"linear-gradient(135deg,#f59e0b,#d97706)",
+              border:"none", borderRadius:12,
+              fontSize:13, fontWeight:700, color:"#1a1a1a",
+              cursor:"pointer", letterSpacing:0.5,
+            }}, "閉じる")
+          )
+        )
+      )
+
       /* ─── Bottom Tab Bar ─── */
       , React.createElement('div', { style: {
         position:"fixed", bottom:0, left:0, right:0, zIndex:100,
