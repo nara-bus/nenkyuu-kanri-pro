@@ -18121,11 +18121,11 @@ function App() {
                 background:"rgba(255,255,255,0.05)", border:"1px solid rgba(99,102,241,0.3)",
                 borderRadius:12, padding:12,
               }}
-                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:8 }}, "年休所得時間")
+                , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:8 }}, "年休所得時間")
                 , React.createElement('div', { style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}
                   /* 前年度 */
                   , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 887}}
-                    , React.createElement('div', { style: { fontSize:10, color:"#94a3b8", marginBottom:3 }}, "前年度")
+                    , React.createElement('div', { style: { fontSize:11, color:"#94a3b8", marginBottom:3 }}, "前年度")
                     , React.createElement(NumpadField, {
                       value: prevH, placeholder: "0:00", accent: true,
                       onTap: ()=>{ const c=parseHM(prevH); openPad({
@@ -18138,7 +18138,7 @@ function App() {
                   )
                   /* 今年度 */
                   , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 900}}
-                    , React.createElement('div', { style: { fontSize:10, color:"#94a3b8", marginBottom:3 }}, "今年度")
+                    , React.createElement('div', { style: { fontSize:11, color:"#94a3b8", marginBottom:3 }}, "今年度")
                     , React.createElement(NumpadField, {
                       value: currH, placeholder: "0:00", accent: true,
                       onTap: ()=>{ const c=parseHM(currH); openPad({
@@ -18158,9 +18158,9 @@ function App() {
                 borderRadius:12, padding:12, width:110,
                 display:"flex", flexDirection:"column", alignSelf:"stretch",
               }}
-                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:8, whiteSpace:"nowrap" }}, "所定労働時間")
+                , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:8, whiteSpace:"nowrap" }}, "所定労働時間")
                 , React.createElement('div', { style: { flex:1, display:"flex", flexDirection:"column", justifyContent:"flex-end" }}
-                  , React.createElement('div', { style: { fontSize:10, color:"#94a3b8", marginBottom:3 }}, "時間")
+                  , React.createElement('div', { style: { fontSize:11, color:"#94a3b8", marginBottom:3 }}, "時間")
                   , React.createElement('div', { onClick: ()=>openPad({
                     title:"1日の所定労働時間",mode:"hm",
                     initH:Math.floor(wpd/60), initM:wpd%60,
@@ -18188,7 +18188,7 @@ function App() {
                 borderRadius:12, padding:"12px 8px",
                 display:"flex", flexDirection:"column", alignItems:"center",
               }}
-                , React.createElement('div', { style: { fontSize:11, color:"#cbd5e1", marginBottom:8 }}, "使用時間")
+                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:8 }}, "使用時間")
                 , React.createElement('div', { style: { flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}
                   , React.createElement('span', { style: { fontSize:22, fontWeight:700, color:"#8b5cf6", lineHeight:1 }}
                     , mmHHMM(usedMin)
@@ -18203,14 +18203,14 @@ function App() {
                 borderRadius:12, padding:"12px 8px",
                 display:"flex", flexDirection:"column", alignItems:"center",
               }}
-                , React.createElement('div', { style: { fontSize:11, color:"#cbd5e1", marginBottom:8 }}, "年休残時間")
+                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:8 }}, "年休残時間")
                 , React.createElement('div', { style: { flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}
                   , React.createElement('span', { style: { fontSize:22, fontWeight:700, color:"#f87171", lineHeight:1 }}
                     , mmHHMM(remMin)
                   )
                 )
                 , React.createElement('div', { style: {
-                  marginTop:6, fontSize:11, fontWeight:700,
+                  marginTop:6, fontSize:12, fontWeight:700,
                   padding:"2px 8px", borderRadius:10,
                   background: prevRem>=0 ? "rgba(99,102,241,0.25)" : "rgba(52,211,153,0.2)",
                   color:       prevRem>=0 ? "#a5b4fc"               : "#34d399",
@@ -18223,7 +18223,7 @@ function App() {
                 borderRadius:12, padding:"12px 8px",
                 display:"flex", flexDirection:"column", alignItems:"center",
               }}
-                , React.createElement('div', { style: { fontSize:11, color:"#cbd5e1", marginBottom:8 }}, "残日数")
+                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:8 }}, "残日数")
                 , React.createElement('div', { style: { flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:3 }}
                   , React.createElement('span', { style: { fontSize:22, fontWeight:700, color:"#60a5fa", lineHeight:1 }}
                     , remWhole, "日"
@@ -18243,7 +18243,7 @@ function App() {
               borderRadius:12, padding:14, display:"grid", gridTemplateColumns:"1fr 1fr", gap:10,
             }}
               , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 1002}}
-                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:4 }}, "日数判定")
+                , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:4 }}, "日数判定")
                 , React.createElement('div', { style: { fontSize:26, fontWeight:700, color:"#f87171" }}
                   , dayJudge, React.createElement('span', { style: { fontSize:13, marginLeft:3 }}, "日")
                 )
@@ -18252,7 +18252,7 @@ function App() {
                 )
               )
               , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 1011}}
-                , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:4 }}, "日数切り替わり残時間")
+                , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:4 }}, "日数切り替わり残時間")
                 , React.createElement('div', { style: { fontSize:26, fontWeight:700, color:"#34d399" }}
                   , mmHHMM(switchMin)
                 )
@@ -18264,7 +18264,7 @@ function App() {
 
             /* 目標日数 */
             , React.createElement('div', { style: { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:14 }}
-              , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1", marginBottom:10 }}, "目標日数設定")
+              , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:10 }}, "目標日数設定")
               , React.createElement('div', { style: { display:"flex", alignItems:"center", gap:10 }}
                 , React.createElement('button', { onClick: ()=>setTDays(d=>Math.max(0,d-1)), style: {
                   width:38,height:38, background:"rgba(99,102,241,0.2)", border:"1px solid rgba(99,102,241,0.4)",
@@ -18282,7 +18282,7 @@ function App() {
                     background:"rgba(52,211,153,0.1)",
                     border:`1px solid ${vsTgt>=0?"rgba(52,211,153,0.4)":"rgba(248,113,113,0.4)"}`,
                     borderRadius:8, padding:"8px 10px" }}
-                    , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1" }}, "目標残時間との差")
+                    , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1" }}, "目標残時間との差")
                     , React.createElement('div', { style: { fontSize:20, fontWeight:700, color:vsTgt>=0?"#34d399":"#f87171" }}
                       , vsTgt>=0?"+":"-", mmHHMM(Math.abs(vsTgt))
                     )
@@ -18292,7 +18292,7 @@ function App() {
                     background:"rgba(96,165,250,0.1)",
                     border:`1px solid ${vsMax>=0?"rgba(96,165,250,0.4)":"rgba(248,113,113,0.4)"}`,
                     borderRadius:8, padding:"8px 10px" }}
-                    , React.createElement('div', { style: { fontSize:12, color:"#cbd5e1" }}, "日数切替時間までの差")
+                    , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1" }}, "日数切替時間までの差")
                     , React.createElement('div', { style: { fontSize:20, fontWeight:700, color:vsMax>=0?"#60a5fa":"#f87171" }}
                       , vsMax>=0?"+":"-", mmHHMM(Math.abs(vsMax))
                     )
@@ -18544,7 +18544,7 @@ function App() {
                         background: e.submitted?"rgba(52,211,153,0.15)":"rgba(248,113,113,0.12)",
                         border: `1px solid ${e.submitted?"rgba(52,211,153,0.4)":"rgba(248,113,113,0.35)"}`,
                         borderRadius:8, color: e.submitted?"#34d399":"#f87171",
-                        fontSize:10, fontWeight:700, cursor:"pointer",
+                        fontSize:11, fontWeight:700, cursor:"pointer",
                         padding:"3px 6px", whiteSpace:"nowrap",
                       }}, e.submitted?"届出済":"未提出")
                     )
@@ -18672,16 +18672,16 @@ function App() {
                     )
                     /* 基準値列 */
                     , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 1422}}
-                      , React.createElement('div', { style: { fontSize:10, color:"#64748b", marginBottom:2 }}, "基準値")
+                      , React.createElement('div', { style: { fontSize:10, color:"#94a3b8", marginBottom:2 }}, "基準値")
                       , React.createElement('div', { style: { fontSize:14, fontWeight:600, color:_nullishCoalesce(valCol, () => ("#34d399")) }}
                         , mmHHMM(row.remainMin)
                       )
                     )
                     /* 日数判定時間列 */
                     , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 1429}}
-                      , React.createElement('div', { style: { fontSize:10, color:"#64748b", marginBottom:2 }}, "日数判定時間")
+                      , React.createElement('div', { style: { fontSize:10, color:"#94a3b8", marginBottom:2 }}, "日数判定時間")
                       , React.createElement('div', { style: { fontSize:13, fontWeight:600, color:_nullishCoalesce(valCol, () => ("#60a5fa")) }}
-                        , mmHHMM(row.maxMin), React.createElement('span', { style: { color:"#475569", margin:"0 3px" }}, "～"), mmHHMM(row.judgeMax)
+                        , mmHHMM(row.maxMin), React.createElement('span', { style: { color:"#64748b", margin:"0 3px" }}, "～"), mmHHMM(row.judgeMax)
                       )
                     )
                   )
