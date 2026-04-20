@@ -17796,6 +17796,16 @@ function App() {
   const [holidays, setHolidays] = useState(FALLBACK_HOLIDAYS);
   const [showSwitchConfirm, setShowSwitchConfirm] = useState(false); // 前年度→今年度移行確認ダイアログ
   const [showNotice, setShowNotice] = useState(true); // 起動時注意喚起
+  // 年休更新通知: 9月16日以降の初回起動時のみ表示
+  const [showRenewalNotice, setShowRenewalNotice] = useState(()=>{
+    const now = new Date();
+    const mm = now.getMonth()+1;
+    const dd = now.getDate();
+    if(mm < 9 || (mm === 9 && dd < 16)) return false;
+    const key = 'renewalNoticed_' + now.getFullYear();
+    if(localStorage.getItem(key)) return false;
+    return true;
+  });
   const [pendingWorkTime,   setPendingWorkTime]   = useState("");    // 確認待ちの労働時間
 
   const hayamiScrollRef = useRef(null);
@@ -18110,27 +18120,43 @@ function App() {
                   /* 前年度 */
                   , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 887}}
                     , React.createElement('div', { style: { fontSize:11, color:"#94a3b8", marginBottom:3 }}, "前年度")
-                    , React.createElement(NumpadField, {
-                      value: prevH, placeholder: "0:00", accent: true,
-                      onTap: ()=>{ const c=parseHM(prevH); openPad({
+                    , React.createElement('div', { onClick: ()=>{ const c=parseHM(prevH); openPad({
                         title:"前年度 年休所得時間",mode:"hm",
                         initH:c!==null?Math.floor(c/60):0,
                         initM:c!==null?c%60:0,
                         onConfirm:(h,m)=>{ setPrevH(`${h}:${String(m).padStart(2,"0")}`); closePad(); },
-                      }); }}
+                      }); }, style: {
+                        ...IS, cursor:"pointer", userSelect:"none",
+                        color: prevH ? "#c4b5fd" : "#64748b",
+                        fontWeight:700, fontSize:20,
+                        display:"flex", alignItems:"center", justifyContent:"space-between",
+                        padding:"10px 14px",
+                        background:"rgba(139,92,246,0.18)",
+                        border:"1px solid rgba(139,92,246,0.55)",
+                      }}
+                      , React.createElement('span', null, prevH || "0:00")
+                      , React.createElement('span', { style: { fontSize:16, color:"#ffffff", marginLeft:8 }}, "⌨")
                     )
                   )
                   /* 今年度 */
                   , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 900}}
                     , React.createElement('div', { style: { fontSize:11, color:"#94a3b8", marginBottom:3 }}, "今年度")
-                    , React.createElement(NumpadField, {
-                      value: currH, placeholder: "0:00", accent: true,
-                      onTap: ()=>{ const c=parseHM(currH); openPad({
+                    , React.createElement('div', { onClick: ()=>{ const c=parseHM(currH); openPad({
                         title:"今年度 年休所得時間",mode:"hm",
                         initH:c!==null?Math.floor(c/60):153,
                         initM:c!==null?c%60:0,
                         onConfirm:(h,m)=>{ setCurrH(`${h}:${String(m).padStart(2,"0")}`); closePad(); },
-                      }); }}
+                      }); }, style: {
+                        ...IS, cursor:"pointer", userSelect:"none",
+                        color: currH ? "#6ee7b7" : "#64748b",
+                        fontWeight:700, fontSize:20,
+                        display:"flex", alignItems:"center", justifyContent:"space-between",
+                        padding:"10px 14px",
+                        background:"rgba(16,185,129,0.15)",
+                        border:"1px solid rgba(16,185,129,0.5)",
+                      }}
+                      , React.createElement('span', null, currH || "0:00")
+                      , React.createElement('span', { style: { fontSize:16, color:"#ffffff", marginLeft:8 }}, "⌨")
                     )
                   )
                 )
@@ -18138,8 +18164,8 @@ function App() {
 
               /* 1日の所定労働時間 */
               , React.createElement('div', { style: {
-                background:"rgba(255,255,255,0.05)", border:"1px solid rgba(52,211,153,0.3)",
-                borderRadius:12, padding:12, width:110,
+                background:"rgba(255,255,255,0.05)", border:"1px solid rgba(251,191,36,0.3)",
+                borderRadius:12, padding:12, width:120,
                 display:"flex", flexDirection:"column", alignSelf:"stretch",
               }}
                 , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:8, whiteSpace:"nowrap" }}, "所定労働時間")
@@ -18151,13 +18177,13 @@ function App() {
                     onConfirm:(h,m)=>{ setWpd(h*60+m||1); closePad(); },
                   }), style: {
                     ...IS, cursor:"pointer", userSelect:"none",
-                    color:"#34d399", fontWeight:700, fontSize:20,
-                    background:"rgba(52,211,153,0.1)", border:"1px solid rgba(52,211,153,0.35)",
+                    color:"#fbbf24", fontWeight:700, fontSize:20,
+                    background:"rgba(251,191,36,0.13)", border:"1px solid rgba(251,191,36,0.5)",
                     display:"flex", alignItems:"center", justifyContent:"space-between",
                     padding:"10px 14px",
                   }}
                     , React.createElement('span', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 933}}, mmHHMM(wpd))
-                    , React.createElement('span', { style: { fontSize:11, color:"#475569" }}, "⌨")
+                    , React.createElement('span', { style: { fontSize:16, color:"#ffffff", marginLeft:8 }}, "⌨")
                   )
                 )
               )
@@ -18796,6 +18822,44 @@ function App() {
           )
         )
       )
+      /* ─── 年休更新通知モーダル ─── */
+      , showRenewalNotice && React.createElement('div', { style: {
+        position:"fixed", inset:0, zIndex:210,
+        background:"rgba(0,0,0,0.7)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        padding:"24px",
+      }}
+        , React.createElement('div', { style: {
+          background:"linear-gradient(135deg,#1e293b 0%,#0f172a 100%)",
+          border:"1.5px solid rgba(99,102,241,0.7)",
+          borderRadius:20, padding:"28px 24px 24px",
+          maxWidth:380, width:"100%",
+          boxShadow:"0 8px 40px rgba(0,0,0,0.6)",
+        }}
+          , React.createElement('div', { style: { display:"flex", alignItems:"center", gap:10, marginBottom:16 }}
+            , React.createElement('span', { style: { fontSize:28 }}, "🔄")
+            , React.createElement('span', { style: { fontSize:16, fontWeight:700, color:"#a5b4fc", letterSpacing:0.5 }}, "年休更新です")
+          )
+          , React.createElement('p', { style: {
+            fontSize:15, color:"#e2e8f0", lineHeight:1.85,
+            margin:"0 0 24px", letterSpacing:0.3,
+          }}, "年休所得時間の更新と使用記録の全削除を行ってください！")
+          , React.createElement('div', { style: { display:"flex", justifyContent:"center" }}
+            , React.createElement('button', { onClick: ()=>{
+              const key = 'renewalNoticed_' + new Date().getFullYear();
+              localStorage.setItem(key, '1');
+              setShowRenewalNotice(false);
+            }, style: {
+              padding:"8px 28px",
+              background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
+              border:"none", borderRadius:12,
+              fontSize:13, fontWeight:700, color:"#fff",
+              cursor:"pointer", letterSpacing:0.5,
+            }}, "OK")
+          )
+        )
+      )
+
       /* ─── 起動時注意喚起モーダル ─── */
       , showNotice && React.createElement('div', { style: {
         position:"fixed", inset:0, zIndex:200,
