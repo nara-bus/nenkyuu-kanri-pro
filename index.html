@@ -18304,7 +18304,7 @@ function App() {
             }}
               , React.createElement('div', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 1002}}
                 , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:4 }}, "日数判定")
-                , React.createElement('div', { style: { fontSize:26, fontWeight:700, color:"#00c853" }}
+                , React.createElement('div', { style: { fontSize:26, fontWeight:700, color:"#ff69b4" }}
                   , dayJudge, React.createElement('span', { style: { fontSize:13, marginLeft:3 }}, "日")
                 )
                 , React.createElement('div', { style: { fontSize:12, color:"#64748b", marginTop:2 }}, "端数 "
@@ -18340,14 +18340,14 @@ function App() {
                 React.createElement('div', { style: { marginTop:12, display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}
                   , React.createElement('div', { style: { background:"rgba(255,255,255,0.05)", border:`1px solid ${vsTgt>=0?"rgba(255,255,255,0.08)":"rgba(248,113,113,0.6)"}`, borderRadius:12, padding:"8px 10px" }}
                     , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1" }}, "基準時間との差")
-                    , React.createElement('div', { style: { fontSize:22, fontWeight:700, color:"#60a5fa" }}
+                    , React.createElement('div', { style: { fontSize:22, fontWeight:700, color:"#00c853" }}
                       , vsTgt>=0?"+":"-", mmHHMM(Math.abs(vsTgt))
                     )
                     , React.createElement('div', { style: { fontSize:12, color:"#64748b" }}, "基準: " , mmHHMM(tRemMin))
                   )
                   , React.createElement('div', { style: { background:"rgba(255,255,255,0.05)", border:`1px solid ${vsMax>=0?"rgba(255,255,255,0.08)":"rgba(248,113,113,0.6)"}`, borderRadius:12, padding:"8px 10px" }}
                     , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1" }}, "最大ここまで休める！")
-                    , React.createElement('div', { style: { fontSize:22, fontWeight:700, color:"#34d399" }}
+                    , React.createElement('div', { style: { fontSize:22, fontWeight:700, color:"#ff69b4" }}
                       , vsMax>=0?"+":"-", mmHHMM(Math.abs(vsMax))
                     )
                     , React.createElement('div', { style: { fontSize:12, color:"#64748b" }}, "日数判定: " , mmHHMM(tMaxMin))
