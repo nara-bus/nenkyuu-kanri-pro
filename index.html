@@ -17856,7 +17856,12 @@ function App() {
     swipeStartY.current = null;
     // 横スワイプが縦より大きく、かつ50px以上
     if(Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
-    if(!allPulseOff){ showBlockToast(); return; }
+    if(!allPulseOff){
+      const idx = TABS.indexOf(tab);
+      const nextTab = dx < 0 ? TABS[Math.min(idx+1, TABS.length-1)] : TABS[Math.max(idx-1, 0)];
+      const allowed = nextTab === 'help' || (tab === 'help' && nextTab === 'main');
+      if(!allowed){ showBlockToast(); return; }
+    }
     setTab(prev => {
       const idx = TABS.indexOf(prev);
       if(dx < 0) return TABS[Math.min(idx+1, TABS.length-1)]; // 左スワイプ → 次
@@ -18062,7 +18067,7 @@ function App() {
 
   const TAB_ICONS = { main:"📋", records:"📅", hayami:"📊", help:"❓" };
   const tabBtn = (id,lbl) => (
-    React.createElement('button', { key: id, onClick: ()=>{ if(!allPulseOff){ showBlockToast(); return; } vibe(50); setTab(id); }, style: {
+    React.createElement('button', { key: id, onClick: ()=>{ if(!allPulseOff && id !== 'help' && !(tab === 'help' && id === 'main')){ showBlockToast(); return; } vibe(50); setTab(id); }, style: {
       flex:1, border:"none",
       background: tab===id ? "rgba(99,102,241,0.2)" : "transparent",
       borderRadius: tab===id ? 10 : 0,
@@ -18120,18 +18125,18 @@ function App() {
             }}
               , React.createElement('span', null, vibeOn ? "📳" : "📴")
             )
-            , React.createElement('button', { onClick: ()=>{ if(!allPulseOff){ showBlockToast(); return; } vibe(50); exportData(); }, title: "JSONでエクスポート", style: {
-              background:"rgba(52,211,153,0.15)", border:"1px solid rgba(52,211,153,0.4)",
+            , React.createElement('button', { onClick: ()=>{ if(!allPulseOff && tab!=='help'){ showBlockToast(); return; } vibe(50); exportData(); }, title: "JSONでエクスポート", style: {
+              background:"rgba(255,160,0,0.12)", border:"1px solid rgba(255,160,0,0.7)",
               borderRadius:8, padding:"6px 10px",
-              color:"#34d399", fontSize:12, fontWeight:600, cursor:"pointer",
+              color:"#ffa000", fontSize:12, fontWeight:600, cursor:"pointer",
             }}, "⬇ 出力" )
-            , React.createElement('label', { onClick: e=>{ if(!allPulseOff){ e.preventDefault(); showBlockToast(); return; } vibe(50); }, title: "JSONからインポート", style: {
-              background:"rgba(56,189,248,0.15)", border:"1px solid rgba(56,189,248,0.5)",
+            , React.createElement('label', { onClick: e=>{ if(!allPulseOff && tab!=='help'){ e.preventDefault(); showBlockToast(); return; } vibe(50); }, title: "JSONからインポート", style: {
+              background:"rgba(0,255,128,0.12)", border:"1px solid rgba(0,255,128,0.7)",
               borderRadius:8, padding:"6px 10px",
-              color:"#38bdf8", fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap",
+              color:"#00ff80", fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap",
             }}, "⬆ 読込"
 
-              , React.createElement('input', { type: "file", accept: ".json", onChange: e=>{ if(!allPulseOff){ showBlockToast(); e.target.value=''; return; } importData(e); }, style: {display:"none"}})
+              , React.createElement('input', { type: "file", accept: ".json", onChange: e=>{ if(!allPulseOff && tab!=='help'){ showBlockToast(); e.target.value=''; return; } importData(e); }, style: {display:"none"}})
             )
 
           )
@@ -18164,12 +18169,12 @@ function App() {
                     )
                     , React.createElement('div', { className: (!showOnboarding && !pulseOff.prevH) ? 'ob-pulse' : '', style: {
                         ...IS, cursor:"pointer", userSelect:"none",
-                        color: prevH ? "#38bdf8" : "#64748b",
+                        color: prevH ? "#55ccff" : "#64748b",
                         fontWeight:700, fontSize:20,
                         display:"flex", alignItems:"center", justifyContent:"center",
                         padding:"10px 14px",
-                        background:"rgba(56,189,248,0.18)",
-                        border:"1px solid rgba(56,189,248,0.55)",
+                        background:"rgba(0,170,255,0.18)",
+                        border:"1px solid rgba(0,170,255,0.95)",
                       }}
                       , React.createElement('span', { onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,prevH:true})); const c=parseHM(prevH); openPad({
                           title:"前年度 年休所得時間",mode:"hm",
@@ -18187,12 +18192,12 @@ function App() {
                     )
                     , React.createElement('div', { className: (!showOnboarding && !pulseOff.currH) ? 'ob-pulse' : '', style: {
                         ...IS, cursor:"pointer", userSelect:"none",
-                        color: currH ? "#6ee7b7" : "#64748b",
+                        color: currH ? "#55ccff" : "#64748b",
                         fontWeight:700, fontSize:20,
                         display:"flex", alignItems:"center", justifyContent:"center",
                         padding:"10px 14px",
-                        background:"rgba(16,185,129,0.15)",
-                        border:"1px solid rgba(16,185,129,0.5)",
+                        background:"rgba(0,170,255,0.18)",
+                        border:"1px solid rgba(0,170,255,0.95)",
                       }}
                       , React.createElement('span', { onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,currH:true})); const c=parseHM(currH); openPad({
                           title:"今年度 年休所得時間",mode:"hm",
@@ -18223,8 +18228,8 @@ function App() {
                     onConfirm:(h,m)=>{ setWpd(h*60+m||1); closePad(); },
                   }); }, style: {
                     ...IS, cursor:"pointer", userSelect:"none",
-                    color:"#fbbf24", fontWeight:700, fontSize:20,
-                    background:"rgba(251,191,36,0.13)", border:"1px solid rgba(251,191,36,0.5)",
+                    color:"#55ccff", fontWeight:700, fontSize:20,
+                    background:"rgba(0,170,255,0.18)", border:"1px solid rgba(0,170,255,0.95)",
                     display:"flex", alignItems:"center", justifyContent:"center",
                     padding:"10px 14px",
                   }}
@@ -18322,14 +18327,14 @@ function App() {
               , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:10 }}, "目標残日数設定")
               , React.createElement('div', { style: { display:"flex", alignItems:"center", justifyContent:"center", gap:19 }}
                 , React.createElement('button', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.max(0,d-1)); }, style: {
-                  width:38,height:38, background:"rgba(99,102,241,0.2)", border:"1px solid rgba(99,102,241,0.4)",
-                  borderRadius:8, color:"#a5b4fc", fontSize:20, cursor:"pointer" }}, "−")
-                , React.createElement('div', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', style: { textAlign:"center", fontSize:28, fontWeight:700, color:"#ddd6fe", background:"rgba(139,92,246,0.3)", border:"1px solid rgba(139,92,246,1.0)", borderRadius:8, padding:"4px 16px" }}
+                  width:38,height:38, background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.4)",
+                  borderRadius:8, color:"#e2e8f0", fontSize:20, cursor:"pointer" }}, "−")
+                , React.createElement('div', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', style: { textAlign:"center", fontSize:28, fontWeight:700, color:"#55ccff", background:"rgba(0,170,255,0.18)", border:"1px solid rgba(0,170,255,0.95)", borderRadius:8, padding:"4px 16px" }}
                   , tDays, " " , React.createElement('span', { style: { fontSize:14 }}, "日")
                 )
                 , React.createElement('button', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.min(20,d+1)); }, style: {
-                  width:38,height:38, background:"rgba(99,102,241,0.2)", border:"1px solid rgba(99,102,241,0.4)",
-                  borderRadius:8, color:"#a5b4fc", fontSize:20, cursor:"pointer" }}, "＋")
+                  width:38,height:38, background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.4)",
+                  borderRadius:8, color:"#e2e8f0", fontSize:20, cursor:"pointer" }}, "＋")
               )
               , hd && (
                 React.createElement('div', { style: { marginTop:12, display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}
@@ -18757,16 +18762,16 @@ function App() {
               {
                 icon:"📱", title:"はじめに",
                 color:"#6366f1",
-                body:`このアプリは、年次有給休暇（年休）の残り時間を管理するツールです。\n使用した年休を記録するだけで、残日数・消費ペースを自動で計算します。\nデータはこの端末に自動保存されるので、次回開いたときもそのまま続きから使えます。`,
+                body:"このアプリは、年次有給休暇（年休）の残り時間を管理するツールです。\n使用した年休を記録するだけで、残日数・消費ペースを自動で計算します。\nデータはこの端末に自動保存されるので、次回開いたときもそのまま続きから使えます。\nタブは画面下のボタンをタップするか、左右にスワイプして切り替えられます。",
               },
               {
-                icon:"⚙️", title:"最初にやること",
-                color:"#8b5cf6",
-                body:"アプリを初めて開くと、入力欄がぼんやり光ります。\n光っている欄を全部タップして数値を入力してください。\n全部タップし終わると、他のタブや機能が使えるようになります。",
+                icon:"✨", title:"最初にやること",
+                color:"#55ccff",
+                body:"アプリを初めて開くと、4つの入力欄がぼんやり光ります。\n光っている欄を全部タップして数値を入力してください。\n全部タップし終わると、他のタブや機能が使えるようになります。\n（使い方タブはいつでも見られます）",
                 items:[
-                  {label:"前年度の年休所得時間", desc:"前の年度から持ち越した年休の合計時間を入力します。水色の枠をタップするとテンキーが開きます。"},
-                  {label:"今年度の年休所得時間", desc:"今年度に新しく付与された年休の合計時間を入力します。緑色の枠をタップするとテンキーが開きます。"},
-                  {label:"1日の所定労働時間", desc:"1日の勤務時間を入力します。オレンジ色の枠をタップするとテンキーが開きます。早見表の計算にも使われます。"},
+                  {label:"前年度の年休所得時間", desc:"前の年度から持ち越した年休の合計時間を入力します。枠をタップするとテンキーが開きます。"},
+                  {label:"今年度の年休所得時間", desc:"今年度に新しく付与された年休の合計時間を入力します。枠をタップするとテンキーが開きます。"},
+                  {label:"1日の所定労働時間", desc:"1日の勤務時間を入力します。枠をタップするとテンキーが開きます。早見表の計算にも使われます。"},
                   {label:"目標残日数", desc:"年休の更新日までに残しておきたい日数を − ・ ＋ で設定します。"},
                 ],
               },
@@ -18775,8 +18780,9 @@ function App() {
                 color:"#10b981",
                 body:"入力した情報をもとに、現在の年休状況を自動で表示します。",
                 items:[
+                  {label:"前年度・今年度の入力枠", desc:"現在消費中の年度の枠が明るく表示されます。年休は前年度分から先に消費され、使い切ると自動で今年度分に切り替わります。"},
                   {label:"消費時間", desc:"使用記録に登録した年休の合計時間です。"},
-                  {label:"年休残時間", desc:"現在残っている年休の時間です。前年度分から先に消費され、使い切ると今年度分に切り替わります。"},
+                  {label:"年休残時間", desc:"現在残っている年休の時間です。「前年度」または「今年度」のバッジでどちらを消費中か確認できます。"},
                   {label:"残日数", desc:"残り時間をもとに、何日分の年休が残っているかを表示します。"},
                   {label:"日数判定", desc:"残り時間から算出した、現在の年休残日数の判定値です。"},
                   {label:"〇〇日に切り替わるまでの時間", desc:"あと何時間使うと残日数の判定が1日減るかを示します。消化ペースの目安にしてください。"},
@@ -18792,6 +18798,7 @@ function App() {
                   {label:"＋ 年休使用日を追加", desc:"ボタンをタップすると入力欄が開きます。使用日・ダイヤ区分・番号・労働時間をすべて入力すると追加できます。"},
                   {label:"使用日", desc:"タップするとカレンダーが開きます。日付を選ぶと曜日が自動で入ります。"},
                   {label:"労働時間", desc:"その日に実際に働いた時間を入力します。上限は15時間00分です。"},
+                  {label:"前年度→今年度の移行確認", desc:"入力した時間によって前年度分が不足する場合、確認ダイアログが表示されます。「承諾」で今年度分への移行を確定、「拒否」で入力をやり直せます。"},
                   {label:"届出済 / 未提出", desc:"年休届の提出状況を管理できます。タップするたびに切り替わります。"},
                   {label:"✏ 編集 / ✕ 削除", desc:"登録済みの記録を修正・削除できます。"},
                 ],
@@ -18799,7 +18806,7 @@ function App() {
               {
                 icon:"📈", title:"早見表の見方",
                 color:"#f59e0b",
-                body:"残り時間が各日数の範囲に入っているかを一覧で確認できます。\n早見表を開くと、現在の判定行が自動で中央に表示されます。",
+                body:"残り時間が各日数の範囲に入っているかを一覧で確認できます。\n早見表を開くと、現在の判定行が自動で中央に表示されます。\n上部に「前年度消費中」または「今年度消費中」と現在の残り時間が表示されます。",
                 items:[
                   {label:"🎯 目標（緑枠）", desc:"設定した目標残日数の行です。"},
                   {label:"📍 判定（青 / ピンク枠）", desc:"現在の残り時間から算出した残日数の行です。目標以上なら青、目標を下回るとピンクで表示されます。"},
@@ -18811,21 +18818,22 @@ function App() {
                 color:"#64748b",
                 body:"入力内容はこの端末に自動保存されます。",
                 items:[
-                  {label:"⬇ 出力", desc:"現在のデータをファイルとして保存します。バックアップや機種変更のときに使ってください。"},
-                  {label:"⬆ 読込", desc:"保存したファイルを読み込んでデータを復元します。現在のデータは上書きされます。"},
-                  {label:"注意", desc:"ブラウザの閲覧データを削除すると、保存したデータが消える場合があります。定期的に「⬇ 出力」でバックアップすることをおすすめします。"},
+                  {label:"⬇ 出力", desc:"現在のデータをJSONファイルとして保存します。バックアップや機種変更のときに使ってください。"},
+                  {label:"⬆ 読込", desc:"保存したファイルを読み込んでデータを復元します。現在のデータは上書きされますのでご注意ください。"},
+                  {label:"⚠ データ消失に注意", desc:"ブラウザのキャッシュ削除やアプリの再インストールでデータが消える場合があります。「⬇ 出力」で定期的にバックアップすることをおすすめします。"},
                 ],
               },
               {
                 icon:"🔔", title:"年休更新のお知らせ",
                 color:"#a5b4fc",
-                body:`毎年9月16日以降に初めてアプリを開くと、年休更新のお知らせが表示されます。\n表示されたら、年休所得時間の更新と使用記録の全削除を行ってください。`,
+                body:"毎年9月16日以降に初めてアプリを開くと、年休更新のお知らせが表示されます。\n表示されたら、年休所得時間の更新と使用記録の全削除を行ってください。",
               },
               {
                 icon:"⚠️", title:"注意事項",
                 color:"#f87171",
                 items:[
                   {label:"計算について", desc:"このアプリの計算はあくまで目安です。実際の年休残数は職場の管理システムで必ず確認してください。"},
+                  {label:"入力ミスに注意", desc:"年休所得時間・所定労働時間の入力ミスや使用記録の記入漏れがないか、定期的に確認してください。"},
                   {label:"データの消失", desc:"ブラウザのキャッシュ削除やアプリの再インストールでデータが消える場合があります。「⬇ 出力」で定期的にバックアップしてください。"},
                 ],
               },
@@ -18913,8 +18921,12 @@ function App() {
           }}, "まずはサマリー画面で基本時間を入力してください。")
           , React.createElement('p', { style: {
             fontSize:13, color:"#94a3b8", lineHeight:1.7,
-            margin:"0 0 24px",
+            margin:"0 0 8px",
           }}, "・前年度・今年度の年休所得時間" + "\n・1日の所定労働時間\n・目標残日数\n\nの入力欄がぼんやり光っています✨")
+          , React.createElement('p', { style: {
+            fontSize:13, color:"#a5b4fc", lineHeight:1.7,
+            margin:"0 0 24px",
+          }}, "わからないことは「使い方」を参照ください！")
           , React.createElement('div', { style: { display:"flex", justifyContent:"center" }}
             , React.createElement('button', { onClick: ()=>{
               vibe(50);
@@ -18927,7 +18939,7 @@ function App() {
               border:"none", borderRadius:12,
               fontSize:14, fontWeight:700, color:"#fff",
               cursor:"pointer", letterSpacing:0.5,
-            }}, "了解！")
+            }}, "OK")
           )
         )
       )
