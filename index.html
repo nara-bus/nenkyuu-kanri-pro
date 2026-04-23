@@ -18409,21 +18409,6 @@ function App() {
               )
             )
 
-            , clearOk && (
-              React.createElement('div', { style: { background:"rgba(248,113,113,0.08)", border:"1px solid rgba(248,113,113,0.4)",
-                borderRadius:12, padding:14, display:"flex", flexDirection:"column", gap:10 }}
-                , React.createElement('div', { style: { fontSize:13, color:"#fca5a5", fontWeight:600 }}, "⚠ 全件削除しますか？" )
-                , React.createElement('div', { style: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}
-                  , React.createElement('button', { onClick: ()=>{ vibe(50); setEntries(()=>[]); setClearOk(false); }, style: {
-                    background:"linear-gradient(135deg,#ef4444,#dc2626)", border:"none",
-                    borderRadius:8, padding:"9px", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer" }}, "削除する")
-                  , React.createElement('button', { onClick: ()=>{ vibe(50); setClearOk(false); }, style: {
-                    background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.15)",
-                    borderRadius:8, padding:"9px", color:"#94a3b8", fontSize:13, cursor:"pointer" }}, "キャンセル")
-                )
-              )
-            )
-
             /* 新規追加フォーム */
             , showAdd && (
               React.createElement('div', { style: { background:"rgba(99,102,241,0.08)", border:"1px solid rgba(99,102,241,0.3)",
@@ -18888,6 +18873,33 @@ function App() {
               )
             ))
 
+          )
+        )
+      )
+      /* ─── 全件削除確認モーダル ─── */
+      , clearOk && React.createElement('div', { style: {
+        position:"fixed", inset:0, zIndex:500,
+        background:"rgba(0,0,0,0.65)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        padding:"24px",
+      }}
+        , React.createElement('div', { style: {
+          background:"#1e293b", border:"1px solid rgba(99,102,241,0.4)",
+          borderRadius:16, padding:"24px", maxWidth:300, width:"100%",
+          boxShadow:"0 8px 40px rgba(0,0,0,0.6)",
+        }}
+          , React.createElement('div', { style: { fontSize:15, fontWeight:700, color:"#ffffff", marginBottom:12, textAlign:"center" }}, "全件削除してもいいですか？")
+          , React.createElement('div', { style: { display:"flex", gap:10, marginTop:8 }}
+            , React.createElement('button', { onClick: ()=>{ vibe(50); setEntries(()=>[]); setClearOk(false); }, style: {
+              flex:1, padding:"10px",
+              background:"linear-gradient(135deg,#ef4444,#dc2626)", border:"none",
+              borderRadius:10, color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer",
+            }}, "削除する")
+            , React.createElement('button', { onClick: ()=>{ vibe(30); setClearOk(false); }, style: {
+              flex:1, padding:"10px",
+              background:"rgba(99,102,241,0.15)", border:"1px solid rgba(99,102,241,0.4)",
+              borderRadius:10, color:"#a5b4fc", fontSize:14, fontWeight:600, cursor:"pointer",
+            }}, "キャンセル")
           )
         )
       )
