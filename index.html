@@ -17827,8 +17827,8 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(isFirstVisit);
   // 点滅対象フィールドの解除フラグ（初回のみ点滅・2回目以降は最初からoff）
   const [pulseOff, setPulseOff] = useState(!isFirstVisit ? { prevH:true, currH:true, wpd:true, tDays:true } : { prevH:false, currH:false, wpd:false, tDays:false });
-  // 全部タップ済みかどうか
-  const allPulseOff = pulseOff.prevH && pulseOff.currH && pulseOff.wpd && pulseOff.tDays;
+  // 全部タップ済みかどうか（オンボーディング非表示 かつ 全フィールドタップ済み）
+  const allPulseOff = (!isFirstVisit) || (pulseOff.prevH && pulseOff.currH && pulseOff.wpd && pulseOff.tDays);
   // ブロック時のトースト
   const [showPulseToast, setShowPulseToast] = useState(false);
   const showBlockToast = () => { setShowPulseToast(true); setTimeout(()=>setShowPulseToast(false), 2000); };
@@ -17887,9 +17887,7 @@ function App() {
       setTimeout(()=>setAnimatingTab(next), 30);
       return next;
     });
-  }, []);
-
-  // 祝日APIから自動取得・自動更新
+  }, [allPulseOff, tab]);
   useEffect(()=>{
     const load = async () => {
       try {
@@ -18190,7 +18188,7 @@ function App() {
                       , React.createElement('span', null, "前年度")
                       , React.createElement('span', { onClick: e=>{ e.stopPropagation(); setInfoPopup({title:"前年度 年休所得時間", desc:"前年度に付与・繰越された年休の時間を入力して下さい。前年度分は今年度分より先に消費されます。"}); }, style:{ fontSize:12, cursor:"pointer", opacity:0.8 }}, "ℹ️")
                     )
-                    , React.createElement('div', { className: (!showOnboarding && !pulseOff.prevH) ? 'ob-pulse' : '', style: {
+                    , React.createElement('div', { className: (!pulseOff.prevH) ? 'ob-pulse' : '', style: {
                         ...IS, cursor:"pointer", userSelect:"none",
                         color: prevH ? "#55ccff" : "#64748b",
                         fontWeight:700, fontSize:20,
@@ -18213,7 +18211,7 @@ function App() {
                       , React.createElement('span', null, "今年度")
                       , React.createElement('span', { onClick: e=>{ e.stopPropagation(); setInfoPopup({title:"今年度 年休所得時間", desc:"今年度に新たに付与された年休の時間を入力して下さい。前年度分を使い切った後にこちらが消費されます。"}); }, style:{ fontSize:12, cursor:"pointer", opacity:0.8 }}, "ℹ️")
                     )
-                    , React.createElement('div', { className: (!showOnboarding && !pulseOff.currH) ? 'ob-pulse' : '', style: {
+                    , React.createElement('div', { className: (!pulseOff.currH) ? 'ob-pulse' : '', style: {
                         ...IS, cursor:"pointer", userSelect:"none",
                         color: currH ? "#55ccff" : "#64748b",
                         fontWeight:700, fontSize:20,
@@ -18245,7 +18243,7 @@ function App() {
                     , React.createElement('span', null, "時間")
                     , React.createElement('span', { onClick: e=>{ e.stopPropagation(); setInfoPopup({title:"所定労働時間", desc:"1日の勤務時間を設定します。タップすると時間を入力できます。早見表の基準時間・判定時間はこの値から自動計算されます。"}); }, style:{ fontSize:12, cursor:"pointer", opacity:0.8 }}, "ℹ️")
                   )
-                  , React.createElement('div', { className: (!showOnboarding && !pulseOff.wpd) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,wpd:true})); openPad({
+                  , React.createElement('div', { className: (!pulseOff.wpd) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,wpd:true})); openPad({
                     title:"1日の所定労働時間",mode:"hm",
                     initH:Math.floor(wpd/60), initM:wpd%60,
                     onConfirm:(h,m)=>{ setWpd(h*60+m||1); closePad(); },
@@ -18349,13 +18347,13 @@ function App() {
             , React.createElement('div', { style: { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:14 }}
               , React.createElement('div', { style: { fontSize:13, color:"#cbd5e1", marginBottom:10 }}, "目標残日数設定")
               , React.createElement('div', { style: { display:"flex", alignItems:"center", justifyContent:"center", gap:19 }}
-                , React.createElement('button', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.max(0,d-1)); }, style: {
+                , React.createElement('button', { className: (!pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.max(0,d-1)); }, style: {
                   width:38,height:38, background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.4)",
                   borderRadius:8, color:"#e2e8f0", fontSize:20, cursor:"pointer" }}, "−")
-                , React.createElement('div', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', style: { textAlign:"center", fontSize:28, fontWeight:700, color:"#55ccff", background:"rgba(0,170,255,0.18)", border:"1px solid rgba(0,170,255,0.95)", borderRadius:8, padding:"4px 16px" }}
+                , React.createElement('div', { className: (!pulseOff.tDays) ? 'ob-pulse' : '', style: { textAlign:"center", fontSize:28, fontWeight:700, color:"#55ccff", background:"rgba(0,170,255,0.18)", border:"1px solid rgba(0,170,255,0.95)", borderRadius:8, padding:"4px 16px" }}
                   , tDays, " " , React.createElement('span', { style: { fontSize:14 }}, "日")
                 )
-                , React.createElement('button', { className: (!showOnboarding && !pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.min(20,d+1)); }, style: {
+                , React.createElement('button', { className: (!pulseOff.tDays) ? 'ob-pulse' : '', onClick: ()=>{ vibe(50); setPulseOff(p=>({...p,tDays:true})); setTDays(d=>Math.min(20,d+1)); }, style: {
                   width:38,height:38, background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.4)",
                   borderRadius:8, color:"#e2e8f0", fontSize:20, cursor:"pointer" }}, "＋")
               )
