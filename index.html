@@ -1128,7 +1128,7 @@ function App() {
                 borderRadius:8, padding:"6px 10px",
                 color:"#ffa000", fontSize:12, fontWeight:600, cursor:"pointer",
                 transition:"all 0.12s ease",
-              }}, "⬇ 出力" )
+              }}, "📥 保存" )
             , React.createElement('label', { onClick: e=>{ if(!allPulseOff && tab!=='help'){ e.preventDefault(); showBlockToast(); return; } vibe(50); }, title: "JSONからインポート",
               onPointerDown: e=>{ e.currentTarget.style.boxShadow="inset 0 2px 4px rgba(0,0,0,0.3)"; e.currentTarget.style.transform="translateY(2px)"; },
               onPointerUp:   e=>{ e.currentTarget.style.boxShadow=isDark?"0 2px 0 rgba(0,180,80,0.5), 0 4px 6px rgba(0,255,128,0.2), inset 0 1px 0 rgba(255,255,255,0.15)":"0 2px 0 rgba(5,150,105,0.4), 0 4px 6px rgba(52,211,153,0.2), inset 0 1px 0 rgba(255,255,255,0.5)"; e.currentTarget.style.transform="translateY(0)"; },
@@ -1140,7 +1140,7 @@ function App() {
                 borderRadius:8, padding:"6px 10px",
                 color: isDark?"#00ff80":"#047857", fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap",
                 transition:"all 0.12s ease",
-              }}, "⬆ 読込"
+              }}, "📤 読込"
 
               , React.createElement('input', { type: "file", accept: ".json", onChange: e=>{ if(!allPulseOff && tab!=='help'){ showBlockToast(); e.target.value=''; return; } importData(e); }, style: {display:"none"}})
             )
@@ -1890,8 +1890,8 @@ function App() {
                 color:T.fld_label,
                 body:"入力内容はこの端末に自動保存されます。",
                 items:[
-                  {label:"⬇ 出力", desc:"現在のデータをJSONファイルとして保存します。バックアップや機種変更のときに使ってください。"},
-                  {label:"⬆ 読込", desc:"保存したファイルを読み込んでデータを復元します。現在のデータは上書きされますのでご注意ください。"},
+                  {label:"📥 保存", desc:"現在のデータをJSONファイルとして保存します。バックアップや機種変更のときに使ってください。"},
+                  {label:"📤 読込", desc:"保存したファイルを読み込んでデータを復元します。現在のデータは上書きされますのでご注意ください。"},
                   {label:"⚠ データ消失に注意", desc:"ブラウザのキャッシュ削除やアプリの再インストールでデータが消える場合があります。「⬇ 出力」で定期的にバックアップすることをおすすめします。"},
                 ],
               },
