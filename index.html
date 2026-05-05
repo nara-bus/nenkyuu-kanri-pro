@@ -782,6 +782,7 @@ function App() {
   });
   const [pendingWorkTime,   setPendingWorkTime]   = useState("");    // 確認待ちの労働時間
 
+
   const [animatingTab, setAnimatingTab] = useState(tab); // アニメーション用タブ状態
 
 
@@ -992,37 +993,75 @@ function App() {
     setFlash(true); setTimeout(()=>setFlash(false),1800);
   };
 
-  const exportData = () => {
-    if(!window.confirm("現在のデータをJSONファイルに出力します。よろしいですか？")) return;
+  const exportData = async () => {
+    const now = new Date();
+    const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}`;
+    const fname = `nenkyuu_${ts}.json`;
     const data = JSON.stringify({wpd,prevH,currH,tDays,entries}, null, 2);
+    // showSaveFilePicker対応ブラウザ（Chrome等・HTTPS環境）
+    if(window.showSaveFilePicker){
+      try{
+        const fh = await window.showSaveFilePicker({
+          suggestedName: fname,
+          types:[{description:"JSONファイル",accept:{"application/json":[".json"]}}]
+        });
+        const writable = await fh.createWritable();
+        await writable.write(data);
+        await writable.close();
+        setFlash(true); setTimeout(()=>setFlash(false),1800);
+        return;
+      }catch(e){
+        if(e.name==="AbortError") return; // キャンセルは何もしない
+        // SecurityError等はフォールバックへ
+      }
+    }
+    // フォールバック（Safari・ローカルファイル等）
     const blob = new Blob([data], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const now = new Date();
-    const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}`;
-    a.href = url; a.download = `nenkyuu_${ts}.json`;
+    a.href = url; a.download = fname;
     a.click(); URL.revokeObjectURL(url);
+    setFlash(true); setTimeout(()=>setFlash(false),1800);
   };
 
-  const importData = e => {
+  const importData = async (e) => {
+    // showOpenFilePicker対応ブラウザ（Chrome等・HTTPS環境）
+    if(window.showOpenFilePicker){
+      try{
+        const [fh] = await window.showOpenFilePicker({
+          types:[{description:"JSONファイル",accept:{"application/json":[".json"]}}],
+          multiple: false
+        });
+        const file = await fh.getFile();
+        const text = await file.text();
+        _applyImport(text);
+        return;
+      }catch(err){
+        if(err.name==="AbortError") return; // キャンセル
+        // フォールバックへ
+      }
+    }
+    // フォールバック（input[type=file]経由）
     const file = _optionalChain([e, 'access', _10 => _10.target, 'access', _11 => _11.files, 'optionalAccess', _12 => _12[0]]); if(!file) return;
-    if(!window.confirm("読み込むと現在のデータが上書きされます。よろしいですか？")){ e.target.value=""; return; }
     const reader = new FileReader();
-    reader.onload = ev => {
-      try {
-        const d = JSON.parse(ev.target.result);
-        if(d.wpd)    setWpd(d.wpd);
-        if(d.prevH)  setPrevH(d.prevH);
-        if(d.currH)  setCurrH(d.currH);
-        else if(d.totalH) setCurrH(d.totalH); // 旧フォーマット後方互換
-        if(typeof d.tDays==="number") setTDays(d.tDays);
-        if(Array.isArray(d.entries))  setEntries(d.entries);
-        save({wpd:_nullishCoalesce(d.wpd, () => (wpd)), prevH:_nullishCoalesce(d.prevH, () => (prevH)), currH:_nullishCoalesce(_nullishCoalesce(d.currH, () => (d.totalH)), () => (currH)), tDays:_nullishCoalesce(d.tDays, () => (tDays)), entries:_nullishCoalesce(d.entries, () => (entries))});
-        setFlash(true); setTimeout(()=>setFlash(false),1800);
-      } catch (e5) { alert("読み込みに失敗しました。正しいJSONファイルか確認してください。"); }
-    };
+    reader.onload = ev => { _applyImport(ev.target.result); };
     reader.readAsText(file);
-    e.target.value="";
+    if(e && e.target) e.target.value="";
+  };
+
+  const _applyImport = (text) => {
+    try {
+      const d = JSON.parse(text);
+      if(!window.confirm("読み込むと現在のデータが上書きされます。よろしいですか？")) return;
+      if(d.wpd)    setWpd(d.wpd);
+      if(d.prevH)  setPrevH(d.prevH);
+      if(d.currH)  setCurrH(d.currH);
+      else if(d.totalH) setCurrH(d.totalH);
+      if(typeof d.tDays==="number") setTDays(d.tDays);
+      if(Array.isArray(d.entries))  setEntries(d.entries);
+      save({wpd:_nullishCoalesce(d.wpd, () => (wpd)), prevH:_nullishCoalesce(d.prevH, () => (prevH)), currH:_nullishCoalesce(_nullishCoalesce(d.currH, () => (d.totalH)), () => (currH)), tDays:_nullishCoalesce(d.tDays, () => (tDays)), entries:_nullishCoalesce(d.entries, () => (entries))});
+      setFlash(true); setTimeout(()=>setFlash(false),1800);
+    } catch (e5) { alert("読み込みに失敗しました。正しいJSONファイルか確認してください。"); }
   };
 
   // 早見表タブを開いたとき判定行までスクロール
@@ -1127,9 +1166,17 @@ function App() {
                 boxShadow:"0 2px 0 rgba(180,110,0,0.4), 0 4px 6px rgba(255,160,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
                 borderRadius:8, padding:"6px 10px",
                 color:"#ffa000", fontSize:12, fontWeight:600, cursor:"pointer",
+                display:"flex", alignItems:"center", gap:4,
                 transition:"all 0.12s ease",
-              }}, "📥 保存" )
-            , React.createElement('label', { onClick: e=>{ if(!allPulseOff && tab!=='help'){ e.preventDefault(); showBlockToast(); return; } vibe(50); }, title: "JSONからインポート",
+              }}
+              , React.createElement('svg', { viewBox:"0 0 24 24", fill:"none", stroke:"currentColor", strokeWidth:2, width:14, height:14 }
+                , React.createElement('path', { d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" })
+                , React.createElement('polyline', { points:"7 10 12 15 17 10" })
+                , React.createElement('line', { x1:"12", y1:"15", x2:"12", y2:"3" })
+              )
+              , "保存"
+            )
+            , React.createElement('button', { onClick: ()=>{ if(!allPulseOff && tab!=='help'){ showBlockToast(); return; } importData(null); }, title: "JSONからインポート",
               onPointerDown: e=>{ e.currentTarget.style.boxShadow="inset 0 2px 4px rgba(0,0,0,0.3)"; e.currentTarget.style.transform="translateY(2px)"; },
               onPointerUp:   e=>{ e.currentTarget.style.boxShadow=isDark?"0 2px 0 rgba(0,180,80,0.5), 0 4px 6px rgba(0,255,128,0.2), inset 0 1px 0 rgba(255,255,255,0.15)":"0 2px 0 rgba(5,150,105,0.4), 0 4px 6px rgba(52,211,153,0.2), inset 0 1px 0 rgba(255,255,255,0.5)"; e.currentTarget.style.transform="translateY(0)"; },
               onPointerLeave:e=>{ e.currentTarget.style.boxShadow=isDark?"0 2px 0 rgba(0,180,80,0.5), 0 4px 6px rgba(0,255,128,0.2), inset 0 1px 0 rgba(255,255,255,0.15)":"0 2px 0 rgba(5,150,105,0.4), 0 4px 6px rgba(52,211,153,0.2), inset 0 1px 0 rgba(255,255,255,0.5)"; e.currentTarget.style.transform="translateY(0)"; },
@@ -1139,10 +1186,15 @@ function App() {
                 boxShadow: isDark?"0 2px 0 rgba(0,180,80,0.5), 0 4px 6px rgba(0,255,128,0.2), inset 0 1px 0 rgba(255,255,255,0.15)":"0 2px 0 rgba(5,150,105,0.4), 0 4px 6px rgba(52,211,153,0.2), inset 0 1px 0 rgba(255,255,255,0.5)",
                 borderRadius:8, padding:"6px 10px",
                 color: isDark?"#00ff80":"#047857", fontSize:12, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap",
+                display:"flex", alignItems:"center", gap:4,
                 transition:"all 0.12s ease",
-              }}, "📤 読込"
-
-              , React.createElement('input', { type: "file", accept: ".json", onChange: e=>{ if(!allPulseOff && tab!=='help'){ showBlockToast(); e.target.value=''; return; } importData(e); }, style: {display:"none"}})
+              }}
+              , React.createElement('svg', { viewBox:"0 0 24 24", fill:"none", stroke:"currentColor", strokeWidth:2, width:14, height:14 }
+                , React.createElement('path', { d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" })
+                , React.createElement('polyline', { points:"17 8 12 3 7 8" })
+                , React.createElement('line', { x1:"12", y1:"3", x2:"12", y2:"15" })
+              )
+              , "読込"
             )
 
           )
