@@ -1480,7 +1480,7 @@ function App() {
                     , React.createElement('div', { style: { fontSize:13, color:T.goal_diffLabel }}, "最大ここまで休める！")
                     , React.createElement('div', { style: { fontSize:22, fontWeight:700, color: vsMax>=0 ? "#00c853" : "#ff69b4", display:"flex", alignItems:"center", gap:4 }}
                       , vsMax>=0?"+":"-", mmHHMM(Math.abs(vsMax))
-                      , React.createElement('span', { className: starAnim ? (vsMax>=0 ? "star-blink" : "star-blink-red") : "", style:{ fontSize:18, marginLeft:18 }}, vsMax>=0 ? "🌟" : "⚠️")
+                      , React.createElement('span', { className: starAnim ? (vsMax>=0 ? "star-blink" : "star-blink-red") : "", style:{ fontSize:18, marginLeft:18 }}, vsMax>=0 ? "😄" : "😱")
                     )
                     , React.createElement('div', { style: { fontSize:12, color:T.hay_judgeLabel }}, "日数判定: " , mmHHMM(tMaxMin))
                   )
