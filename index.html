@@ -738,11 +738,6 @@ function App() {
   const [importError,   setImportError]   = useState(false); // インポートエラーモーダル用
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [flash,    setFlash]    = useState(false);
-  const backupWarn = useMemo(()=>{
-    const t = localStorage.getItem('nenkyuu_last_backup');
-    if(!t) return true; // 一度もバックアップしていない
-    return (Date.now() - Number(t)) > 30 * 24 * 60 * 60 * 1000; // 30日超過
-  },[flash]); // flashが変わる（=エクスポート直後）に再評価
   const [pad,      setPad]      = useState(null);
   const [infoPopup, setInfoPopup] = useState(null); // {title, desc}
 
@@ -1014,7 +1009,6 @@ function App() {
         const writable = await fh.createWritable();
         await writable.write(data);
         await writable.close();
-        localStorage.setItem('nenkyuu_last_backup', Date.now());
         setFlash(true); setTimeout(()=>setFlash(false),1800);
         return;
       }catch(e){
@@ -1028,7 +1022,6 @@ function App() {
     const a = document.createElement("a");
     a.href = url; a.download = fname;
     a.click(); URL.revokeObjectURL(url);
-    localStorage.setItem('nenkyuu_last_backup', Date.now());
     setFlash(true); setTimeout(()=>setFlash(false),1800);
   };
 
@@ -1222,23 +1215,6 @@ function App() {
         /* ════ MAIN TAB ════ */
         , tab==="main" && (
           React.createElement('div', { style: { display:"flex", flexDirection:"column", gap:12 }}
-
-            /* ─── バックアップ警告バナー ─── */
-            , backupWarn && allPulseOff && React.createElement('div', { style: {
-                background: isDark ? "rgba(251,191,36,0.12)" : "rgba(251,191,36,0.18)",
-                border: "1px solid rgba(251,191,36,0.5)",
-                borderRadius:10, padding:"9px 14px",
-                display:"flex", alignItems:"center", justifyContent:"space-between", gap:8,
-              }}
-              , React.createElement('span', { style: { fontSize:13, color: isDark ? "#fbbf24" : "#92400e", lineHeight:1.5 }},
-                "💾 バックアップをお忘れなく"
-              )
-              , React.createElement('button', { onClick: exportData, style: {
-                  flexShrink:0, fontSize:12, fontWeight:700, padding:"4px 10px",
-                  background:"rgba(251,191,36,0.3)", border:"1px solid rgba(251,191,36,0.6)",
-                  borderRadius:7, color: isDark ? "#fbbf24" : "#92400e", cursor:"pointer",
-                }}, "↓ 保存")
-            )
 
             /* ═══ メインビジュアルカード：円グラフ＋右側入力 ═══ */
             , React.createElement('div', { style: {
